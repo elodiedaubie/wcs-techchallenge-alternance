@@ -50,7 +50,7 @@ class HomeController extends AbstractController
                 return $errors[] = "The name field should not be empty";
             }
         //check if data is already in DB
-            foreach ($argonauts as $key => $argonaut) {
+            foreach ($argonauts as $argonaut) {
                 if (in_array($name, $argonaut)) {
                     return $errors[] = "This name is already in the list";
                 }
