@@ -1,5 +1,7 @@
 {% extends 'layout.html.twig' %}
 
+{% block title %}Argonauts{% endblock %}
+
 {% block content %}
     <!-- Header section -->
 <header>
@@ -24,11 +26,11 @@
     </form>
     <!-- Member list -->
     <h2>Membres de l'équipage</h2>
-    <section class="member-list">
+    <div class="member-list">
         {% for argonaut in argonauts %}
         <div class="member-item">{{ argonaut.name }}</div>
         {% endfor %}
-    </section>
+    </div>
 </main>
   
 <footer>
