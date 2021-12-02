@@ -21,48 +21,40 @@ class HomeController extends AbstractController
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    /**
-     * Displays Argonauts datas to home page
-     */
 
-    public function showArgonauts(): string
+    public function index(): string
     {
         $manager = new HomeManager();
         //select list of argonauts name from DB, order by name in ASC order
         $argonauts = $manager->selectAll('name');
-
-        return $this->twig->render('Home/index.html.twig', ['argonauts' => $argonauts]);
-    }
-    /**
-     * Form validation and add new Argonauts names into DB
-     */
-    public function addArgonauts(): string
-    {
-        //remove spaces before and after word, put everything in LowerCase and the only first letter in Uppercase
-        $name = trim(ucwords(strtolower($_POST['name'])));
         $errors = [];
-        $manager = new HomeManager();
-        $argonauts = $manager->selectAll('name');
         //check if FORM is submitted
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        //check if field is empty, return an error if not
+            //remove spaces before and after word, put everything in LowerCase and the only first letter in Uppercase
+            $name = trim(ucwords(strtolower($_POST['name'])));
             if (empty($_POST['name'])) {
-                return $errors[] = "The name field should not be empty";
+                $errors[] = "The name field should not be empty";
             }
-        //check if data is already in DB
+            if (strlen($name) > 70) {
+                $errors[] = "Number of characters cannot be greater than 70";
+            }
+            if (is_numeric($name)) {
+                $errors[] = "Names should be in alphanumeric characters";
+            }
+            //check if data is already in DB, or field empty, or name above 70 letters,
             foreach ($argonauts as $argonaut) {
                 if (in_array($name, $argonaut)) {
-                    return $errors[] = "This name is already in the list";
+                    $errors[0] = "This name is already in the list";
                 }
             }
-        //check if data lenght is < to 70 caracters like in DB
-            if (strlen($name) > 70) {
-                return $errors[] = "Names number of caracters cannot be greater than 70";
+            if (empty($errors)) {
+                $manager->add($name);
             }
-        //else send it in DB
-            $manager->add($name);
-            header('Location:/');
         }
-        return $this->twig->render('Home/index.html.twig', ['errors' => $argonauts]);
+        $argonauts = $manager->selectAll('name');
+        return $this->twig->render('Home/index.html.twig', [
+            'argonauts' => $argonauts,
+            'errors' => $errors
+        ]);
     }
 }

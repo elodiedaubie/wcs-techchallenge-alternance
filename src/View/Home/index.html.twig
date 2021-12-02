@@ -14,10 +14,13 @@
     
     <!-- New member form -->
     <h2>Ajouter un(e) Argonaute</h2>
-    <form class="new-member-form" method="post" action="/form">
+    <form class="new-member-form" method="post" action="/">
         <label for="name">Nom de l&apos;Argonaute</label>
         <input id="name" name="name" type="text" placeholder="Charalampos" />
         <button type="submit">Envoyer</button>
+        {% for error in errors %}
+        <p class="error">{{error}}</p>
+    {% endfor %}
     </form>
     <!-- Member list -->
     <h2>Membres de l'équipage</h2>
